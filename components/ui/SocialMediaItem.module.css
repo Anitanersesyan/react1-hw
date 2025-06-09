@@ -1,0 +1,22 @@
+.socialMediaItem {
+  padding-block: var(--spacing-04);
+}
+
+.socialMediaLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.socialMediaIcon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.socialMediaText {
+  font-size: medium;
+  font-weight: 200;
+}
