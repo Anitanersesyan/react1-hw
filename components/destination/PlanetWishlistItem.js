@@ -1,6 +1,3 @@
-// TASK - React 1 week 2
-// Move this to its own file
-
 "use client";
 
 const PlanetWishlistItem = ({ name, onRemove, thumbnail }) => {
