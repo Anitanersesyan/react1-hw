@@ -1,7 +1,3 @@
-/* TASK - React 1 week 2 */
-/* Create a <NavItem> component, which accepts the following:  */
-/* title, link, isActive  */
-
 "use client";
 import Link from "next/link";
 import classNames from "classnames";
