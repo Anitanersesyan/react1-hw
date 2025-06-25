@@ -8,23 +8,32 @@ import PlanetWishlistItem from "@/components/destination/PlanetWishlistItem";
 import { planets } from "@/components/destination/Planets";
 
 const Destinations = () => {
-  const [selectedPlanets, onAddPlanet] = useState([]);
+  const [selectedPlanets, setSelectedPlanets] = useState([]);
+  const [wishlist, setWishlist] = useState([]); 
 
-  let numberOfPlanets = 0;
-
-  numberOfPlanets = selectedPlanets.length;
+  const numberOfPlanets = selectedPlanets.length;
 
   const onAddOrRemovePlanet = (name) => {
     const isSelected = selectedPlanets.includes(name);
     if (isSelected) {
-      onAddPlanet(selectedPlanets.filter((planet) => planet !== name));
+      setSelectedPlanets(selectedPlanets.filter((planet) => planet !== name));
     } else {
-      onAddPlanet([...selectedPlanets, name]);
+      setSelectedPlanets([...selectedPlanets, name]);
     }
   };
 
   const removeFromWishlist = (name) => {
-    onAddPlanet(selectedPlanets.filter((planet) => planet !== name));
+    setSelectedPlanets(selectedPlanets.filter((planet) => planet !== name));
+    setWishlist(wishlist.filter((item) => item.name !== name));
+  };
+
+  const handleAddWishlistItem = (itemName) => {
+    const newItem = {
+      name: itemName,
+      thumbnail: "/images/placeholder.png", 
+    };
+    setWishlist((prev) => [...prev, newItem]);
+    setSelectedPlanets((prev) => [...prev, itemName]);
   };
 
   const PlanetCard = ({
@@ -66,19 +75,17 @@ const Destinations = () => {
             <p>You have {numberOfPlanets} planets in your wishlist</p>
           )}
           <b>List coming soon after lesson 3!</b>
-          {/* STOP! - this is for week 3!*/}
-          {/* TASK - React 1 week 3 */}
-          {/* Import the AddWishlistItem react component */}
-          <AddWishlistItem />
-          {/* TASK - React 1 week 3 */}
-          {/* Convert the list, so it is using selectedPlanets.map() to display the items  */}
-          {/* Implement the "REMOVE" function */}
-          {/* uncomment the following code snippet: */}
+
+          {/* AddWishlistItem now receives the handler prop */}
+          <AddWishlistItem onAddWishlistItem={handleAddWishlistItem} />
 
           <h3>Your current wishlist</h3>
           <div className={styles.wishlistList}>
-            {selectedPlanets.map((planetName) => {
-              const planet = planets.find((p) => p.name === planetName);
+            {[...selectedPlanets].map((planetName) => {
+              const planet =
+                planets.find((p) => p.name === planetName) ||
+                wishlist.find((w) => w.name === planetName);
+
               return (
                 <PlanetWishlistItem
                   key={planet.name}
@@ -113,3 +120,4 @@ const Destinations = () => {
 };
 
 export default Destinations;
+
