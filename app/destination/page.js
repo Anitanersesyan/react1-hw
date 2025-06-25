@@ -4,56 +4,36 @@ import { useState } from "react";
 
 import styles from "@/components/destination/destination.module.css";
 import { AddWishlistItem } from "@/components/destination/AddWishlistItem";
-import { PlanetWishlistItem } from "@/components/destination/PlanetWishlistItem";
+import PlanetWishlistItem from "@/components/destination/PlanetWishlistItem";
+import { planets } from "@/components/destination/Planets";
 
 const Destinations = () => {
-  const [selectedPlanets, onAddPlanet] = useState([]);
+  const [selectedPlanets, setSelectedPlanets] = useState([]);
+  const [wishlist, setWishlist] = useState([]); 
 
-  let numberOfPlanets = 0;
+  const numberOfPlanets = selectedPlanets.length;
 
-  numberOfPlanets = selectedPlanets.length;
-
-  const planets = [
-    {
-      name: "Europa",
-      description:
-        "Europa, one of Jupiter’s moons, is an icy world with a hidden ocean beneath its surface. This mysterious moon is a prime candidate for the search for extraterrestrial life, making it a thrilling destination for space explorers.",
-      thumbnail: "/destination/image-europa.png",
-    },
-
-    {
-      name: "Mars",
-      description:
-        "Mars, the Red Planet, is a barren yet fascinating world with vast deserts, towering volcanoes, and the deepest canyon in the solar system. As humanity’s next frontier, Mars invites us to dream of colonization and the possibilities of life beyond Earth.",
-      thumbnail: "/destination/image-mars.png",
-    },
-
-    {
-      name: "Moon",
-      description:
-        "Our closest celestial neighbor, the Moon, is a silent witness to Earth's history. With its stunning craters and desolate landscapes, the Moon offers a unique glimpse into space exploration's past and future, making it a perfect destination for lunar adventurers.",
-      thumbnail: "/destination/image-moon.png",
-    },
-
-    {
-      name: "Titan",
-      description:
-        "Titan, Saturn's largest moon, is a world of dense atmosphere and liquid methane lakes. This enigmatic moon is shrouded in a thick orange haze, concealing a landscape that is both alien and strangely familiar, beckoning explorers to uncover its secrets.",
-      thumbnail: "/destination/image-titan.png",
-    },
-  ];
-
-  const onAddOrRemovePlanet = (name, index) => {
+  const onAddOrRemovePlanet = (name) => {
     const isSelected = selectedPlanets.includes(name);
-
     if (isSelected) {
-      onAddPlanet(selectedPlanets.filter((planet) => planet !== name));
+      setSelectedPlanets(selectedPlanets.filter((planet) => planet !== name));
     } else {
-      onAddPlanet([...selectedPlanets, name]);
+      setSelectedPlanets([...selectedPlanets, name]);
     }
-    console.log(
-      `You seleceted the following planet: ${name}, with the index of ${index}`
-    );
+  };
+
+  const removeFromWishlist = (name) => {
+    setSelectedPlanets(selectedPlanets.filter((planet) => planet !== name));
+    setWishlist(wishlist.filter((item) => item.name !== name));
+  };
+
+  const handleAddWishlistItem = (itemName) => {
+    const newItem = {
+      name: itemName,
+      thumbnail: "/images/placeholder.png", 
+    };
+    setWishlist((prev) => [...prev, newItem]);
+    setSelectedPlanets((prev) => [...prev, itemName]);
   };
 
   const PlanetCard = ({
@@ -89,37 +69,33 @@ const Destinations = () => {
         <h1>Travel destinations</h1>
         <section className="card">
           <h2>Wishlist</h2>
-
           {numberOfPlanets === 0 ? (
             <p>No planets in wishlist :(</p>
           ) : (
             <p>You have {numberOfPlanets} planets in your wishlist</p>
           )}
-
           <b>List coming soon after lesson 3!</b>
 
-          {/* STOP! - this is for week 3!*/}
-          {/* TASK - React 1 week 3 */}
-          {/* Import the AddWishlistItem react component */}
-          {/* <AddWishlistItem /> */}
-          {/* TASK - React 1 week 3 */}
-          {/* Convert the list, so it is using selectedPlanets.map() to display the items  */}
-          {/* Implement the "REMOVE" function */}
-          {/* uncomment the following code snippet: */}
-          {/* 
+          {/* AddWishlistItem now receives the handler prop */}
+          <AddWishlistItem onAddWishlistItem={handleAddWishlistItem} />
+
           <h3>Your current wishlist</h3>
           <div className={styles.wishlistList}>
-            <PlanetWishlistItem 
-              name="europa"
-              onRemove={() => removeFromWishlist('europa')}
-              thumbnail="/destination/image-europa.png"
-            />
-            <PlanetWishlistItem 
-              name="europa"
-              onRemove={() => removeFromWishlist('europa')}
-              thumbnail="/destination/image-europa.png"
-            />
-          </div> */}
+            {[...selectedPlanets].map((planetName) => {
+              const planet =
+                planets.find((p) => p.name === planetName) ||
+                wishlist.find((w) => w.name === planetName);
+
+              return (
+                <PlanetWishlistItem
+                  key={planet.name}
+                  name={planet.name}
+                  thumbnail={planet.thumbnail}
+                  onRemove={() => removeFromWishlist(planet.name)}
+                />
+              );
+            })}
+          </div>
         </section>
         <section className="card">
           <h2>Possible destinations</h2>
@@ -144,3 +120,4 @@ const Destinations = () => {
 };
 
 export default Destinations;
+
